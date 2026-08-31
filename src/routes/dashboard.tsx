@@ -60,14 +60,12 @@ function MetricCard({
   tone: string;
 }) {
   return (
-    <div className="glass lift rounded-2xl p-5">
-      <div className="flex items-start justify-between">
-        <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{label}</p>
-        <div className={`grid size-9 place-items-center rounded-xl ${tone}`}>
-          <Icon size={16} />
-        </div>
+    <div className="border-l border-border px-5 first:border-l-0 first:pl-0">
+      <div className="flex items-center gap-2 text-[0.6875rem] font-medium tracking-wide text-muted-foreground uppercase">
+        <Icon size={13} className={tone} />
+        {label}
       </div>
-      <p className="mt-3 font-display text-[2rem] leading-none font-extrabold">{value}</p>
+      <p className="mt-3 text-[2rem] leading-none font-semibold tracking-tight">{value}</p>
       <p className="mt-2 text-xs text-muted-foreground">{hint}</p>
     </div>
   );
@@ -85,22 +83,22 @@ function DashboardPage() {
       actions={
         <button
           onClick={() => navigate({ to: "/exam/setup" })}
-          className="magnetic inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-bold text-primary-foreground"
+          className="magnetic inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
         >
           <Plus size={16} /> Create &amp; Grade New Exam
         </button>
       }
     >
       {data?.demo && (
-        <p className="mono-token mb-5 rounded-xl border border-warn/40 bg-warn/10 px-3 py-2 text-xs text-warn">
+        <p className="mono-token mb-6 border-l-2 border-warn pl-3 text-xs text-warn">
           FastAPI backend unreachable at /api/v1 — rendering demo fixtures. Start the backend to load
           live data.
         </p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {isLoading || !metrics ? (
-          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[142px] rounded-2xl" />)
+          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[104px] rounded-md" />)
         ) : (
           <>
             <MetricCard
@@ -108,97 +106,97 @@ function DashboardPage() {
               value={String(metrics.total_exams)}
               hint="Across all classes this session"
               Icon={FileSpreadsheet}
-              tone="bg-brand/15 text-brand-light"
+              tone="text-brand"
             />
             <MetricCard
               label="Grading Accuracy"
               value={`${metrics.accuracy_pct.toFixed(1)}%`}
               hint="Teacher-confirmed vs AI-scored"
               Icon={Target}
-              tone="bg-pass/15 text-pass"
+              tone="text-pass"
             />
             <MetricCard
               label="Hours Saved"
               value={`${metrics.hours_saved}h`}
               hint="At 0.35 min/paper manual baseline"
               Icon={Clock}
-              tone="bg-vision/15 text-vision"
+              tone="text-vision"
             />
             <MetricCard
               label="Flagged Papers"
               value="2"
               hint="Awaiting teacher moderation"
               Icon={Flag}
-              tone="bg-warn/15 text-warn"
+              tone="text-warn"
             />
           </>
         )}
       </div>
 
       {/* Recent exams table */}
-      <div className="glass mt-6 overflow-hidden rounded-2xl">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="text-base font-semibold">Recent Exams</h2>
+      <div className="mt-10">
+        <div className="flex items-center justify-between border-b border-border pb-3">
+          <h2 className="text-sm font-semibold tracking-tight">Recent Exams</h2>
           <span className="mono-token text-[0.625rem] text-muted-foreground">
             GET /api/v1/exams/list
           </span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-muted/40 text-xs text-muted-foreground">
-              <tr>
-                <th className="px-5 py-3 font-semibold">Exam Name</th>
-                <th className="px-5 py-3 font-semibold">Date</th>
-                <th className="px-5 py-3 font-semibold">Class Size</th>
-                <th className="px-5 py-3 font-semibold">Status</th>
-                <th className="px-5 py-3 font-semibold">Class Avg</th>
-                <th className="px-5 py-3 font-semibold text-right">Actions</th>
+            <thead className="text-[0.625rem] tracking-wide text-muted-foreground uppercase">
+              <tr className="border-b border-border">
+                <th className="py-3 pr-4 font-medium">Exam Name</th>
+                <th className="py-3 pr-4 font-medium">Date</th>
+                <th className="py-3 pr-4 font-medium">Class Size</th>
+                <th className="py-3 pr-4 font-medium">Status</th>
+                <th className="py-3 pr-4 font-medium">Class Avg</th>
+                <th className="py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading
                 ? Array.from({ length: 4 }).map((_, i) => (
-                    <tr key={i} className="border-t border-border">
-                      <td colSpan={6} className="px-5 py-4">
+                    <tr key={i} className="border-b border-border">
+                      <td colSpan={6} className="py-4">
                         <Skeleton className="h-5 w-full shimmer" />
                       </td>
                     </tr>
                   ))
                 : data?.exams.map((exam) => (
-                    <tr key={exam.id} className="border-t border-border transition-colors hover:bg-accent/40">
-                      <td className="px-5 py-3.5">
+                    <tr key={exam.id} className="border-b border-border transition-colors hover:bg-secondary/60">
+                      <td className="py-4 pr-4">
                         <Link
                           to="/diagnostic-studio"
                           search={{ exam_id: exam.id }}
-                          className="font-medium text-foreground hover:text-brand-light"
+                          className="font-medium text-foreground hover:text-brand"
                         >
                           {exam.name}
                         </Link>
                       </td>
-                      <td className="px-5 py-3.5 text-muted-foreground">
+                      <td className="py-4 pr-4 text-muted-foreground">
                         {new Date(exam.created_at).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-5 py-3.5">
+                      <td className="py-4 pr-4">
                         <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                           <Users size={13} /> {exam.paper_count}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5">
+                      <td className="py-4 pr-4">
                         <StatusBadge status={exam.status} />
                       </td>
-                      <td className="mono-token px-5 py-3.5">
+                      <td className="mono-token py-4 pr-4">
                         {exam.avg_score === null
                           ? "—"
                           : `${((exam.avg_score / exam.max_score) * 100).toFixed(1)}%`}
                       </td>
-                      <td className="px-5 py-3.5 text-right">
+                      <td className="py-4 pr-4 text-right">
                         <button
                           aria-label={`Actions for ${exam.name}`}
-                          className="grid size-8 place-items-center rounded-lg border border-border text-muted-foreground transition-colors hover:text-foreground"
+                          className="grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
                         >
                           <MoreHorizontal size={15} />
                         </button>
@@ -210,10 +208,14 @@ function DashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[3fr_2fr]">
-        <div className="glass rounded-2xl p-5">
-          <h2 className="text-base font-semibold">Score Distribution</h2>
-          <p className="mb-4 text-xs text-muted-foreground">Students per score band · current cohort</p>
+      <div className="mt-10 grid gap-10 lg:grid-cols-[3fr_2fr]">
+        <div>
+          <h2 className="border-b border-border pb-3 text-sm font-semibold tracking-tight">
+            Score Distribution
+          </h2>
+          <p className="mt-3 mb-4 text-xs text-muted-foreground">
+            Students per score band · current cohort
+          </p>
           <div className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={scoreBands}>
@@ -224,21 +226,25 @@ function DashboardPage() {
                   contentStyle={{
                     background: "var(--popover)",
                     border: "1px solid var(--border)",
-                    borderRadius: 12,
+                    borderRadius: 6,
                     fontSize: 12,
                   }}
                   formatter={(v) => [`${v} students`, "Count"]}
                 />
-                <Bar dataKey="count" fill="var(--brand)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="count" fill="var(--brand)" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="glass rounded-2xl p-5">
-          <h2 className="text-base font-semibold">Quick Actions</h2>
-          <p className="mb-4 text-xs text-muted-foreground">Press ⌘K for the full command palette</p>
-          <div className="space-y-2">
+        <div>
+          <h2 className="border-b border-border pb-3 text-sm font-semibold tracking-tight">
+            Quick Actions
+          </h2>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Press ⌘K for the full command palette
+          </p>
+          <div className="mt-2 divide-y divide-border">
             {[
               { label: "Re-extract rubric with Qwen AI", to: "/exam/setup", Icon: Wand2 },
               { label: "Review flagged papers", to: "/diagnostic-studio", Icon: Flag },
@@ -247,9 +253,9 @@ function DashboardPage() {
               <Link
                 key={label}
                 to={to}
-                className="lift flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm font-medium"
+                className="flex items-center gap-3 py-3 text-sm font-medium transition-colors hover:text-brand"
               >
-                <Icon size={15} className="text-brand-light" />
+                <Icon size={15} className="text-muted-foreground" />
                 {label}
                 <ArrowUpRight size={14} className="ml-auto text-muted-foreground" />
               </Link>
