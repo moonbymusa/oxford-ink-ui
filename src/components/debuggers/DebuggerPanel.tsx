@@ -96,17 +96,17 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 1) {
     const g = d.garbage;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok={!g.flagged} tone="alert">
           {g.flagged ? "Garbage / padding flagged" : "Clean"} (score: {g.relevance_score.toFixed(2)})
         </StatusLine>
         <Row label="Contextual relevance score" value={`${g.relevance_score.toFixed(2)} / 1.0  [LOW = GOOD]`} />
         <Row label="Threshold (flag above)" value={g.threshold.toFixed(2)} />
         <Row label="Sentences scanned" value={String(g.sentences_scanned)} />
-        <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+        <div className="border-l-2 border-border pl-3 text-xs text-muted-foreground">
           {g.notes}
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className="h-1 overflow-hidden rounded-full bg-secondary">
           <div
             className={cn("h-full rounded-full transition-[width] duration-700", g.flagged ? "bg-alert" : "bg-pass")}
             style={{ width: `${Math.min(100, g.relevance_score * 100)}%` }}
@@ -119,7 +119,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 2) {
     const n = d.negation;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok={!n.flagged} tone="alert">
           {n.flagged ? "Negation detected — concept reversed" : "No negation detected"}
         </StatusLine>
@@ -127,7 +127,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
         <div className="text-xs text-muted-foreground">Dependency-parse tokens scanned</div>
         <div className="flex flex-wrap gap-1.5">
           {n.tokens_scanned.map((t) => (
-            <span key={t} className="mono-token rounded-md border border-border bg-muted/50 px-2 py-0.5">
+            <span key={t} className="pill-soft mono-token rounded px-1.5 py-0.5">
               {t}
             </span>
           ))}
@@ -137,7 +137,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
         ) : (
           <div className="space-y-2">
             {n.flagged_phrases.map((p) => (
-              <div key={p.phrase} className="rounded-xl border border-alert/40 bg-alert/10 p-3 text-xs">
+              <div key={p.phrase} className="border-l-2 border-alert pl-3 text-xs">
                 <p className="mono-token text-alert">“{p.phrase}”</p>
                 <p className="mt-1 text-muted-foreground">
                   Semantic shift against rubric concept <b className="text-foreground">{p.concept}</b>
@@ -153,7 +153,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 3) {
     const s = d.synonym;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok tone="pass">
           {s.resolved} synonym{s.resolved === 1 ? "" : "s"} resolved
         </StatusLine>
@@ -173,7 +173,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 4) {
     const s = d.spelling;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok={s.corrections_applied === 0} tone="warn">
           {s.corrections_applied} auto-correction{s.corrections_applied === 1 ? "" : "s"} applied (no
           deduction)
@@ -193,7 +193,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 5) {
     const s = d.sequence;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok={s.correct_order} tone="warn">
           {s.correct_order ? "Correct order" : "Order violated"}
         </StatusLine>
@@ -202,10 +202,8 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
             <div key={step.label} className="flex items-center gap-2">
               <div
                 className={cn(
-                  "flex flex-1 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium",
-                  step.detected
-                    ? "border-pass/40 bg-pass/10 text-pass"
-                    : "border-warn/45 bg-warn/10 text-warn",
+                  "flex flex-1 items-center gap-2 border-b border-border py-1.5 text-xs font-medium",
+                  step.detected ? "text-pass" : "text-warn",
                 )}
               >
                 <span className="mono-token opacity-60">{i + 1}</span>
@@ -229,7 +227,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 6) {
     const v = d.vision;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok tone="vision">
           Vision verified (confidence: {v.confidence.toFixed(1)}%)
         </StatusLine>
@@ -251,18 +249,18 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
   if (tab === 7) {
     const s = d.density;
     return (
-      <div className="space-y-3 spring-in">
+      <div className="space-y-2.5 spring-in">
         <StatusLine ok={!s.flagged} tone="warn">
           {s.flagged ? "Low density — fluff flagged" : "High density"}
         </StatusLine>
         <Row label="Density ratio" value={`${s.density_ratio.toFixed(1)}% (threshold: ${s.threshold}%)`} />
         <Row label="Valid keyword hits" value={String(s.valid_keyword_hits)} />
         <Row label="Total word count" value={String(s.total_word_count)} />
-        <p className="mono-token rounded-xl border border-border bg-muted/40 p-3 text-xs">
+        <p className="mono-token border-l-2 border-border pl-3 text-xs text-muted-foreground">
           ({s.valid_keyword_hits} / {s.total_word_count}) × 100 = {s.raw_ratio.toFixed(2)}% →
           normalized {s.density_ratio.toFixed(1)}%
         </p>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className="h-1 overflow-hidden rounded-full bg-secondary">
           <div
             className={cn("h-full rounded-full transition-[width] duration-700", s.flagged ? "bg-warn" : "bg-pass")}
             style={{ width: `${Math.min(100, s.density_ratio)}%` }}
@@ -274,7 +272,7 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
 
   const a = d.aggregator;
   return (
-    <div className="space-y-3 spring-in">
+    <div className="space-y-2.5 spring-in">
       <StatusLine ok={a.total_awarded === a.total_max} tone="pass">
         {a.total_awarded === a.total_max ? "Full match" : "Partial match"} ({a.total_awarded}/
         {a.total_max})
@@ -287,21 +285,21 @@ export function DebuggerTabContent({ tab, paper }: { tab: number; paper: PaperDe
           r.max,
           <span
             className={cn(
-              "rounded-md border px-1.5 py-0.5 text-[0.625rem] font-semibold",
+              "pill-soft rounded px-1.5 py-0.5 text-[0.625rem] font-medium",
               r.match_type === "missed"
-                ? "border-alert/40 bg-alert/10 text-alert"
+                ? "text-alert"
                 : r.match_type === "exact"
-                  ? "border-pass/40 bg-pass/10 text-pass"
+                  ? "text-pass"
                   : r.match_type === "vision"
-                    ? "border-vision/40 bg-vision/10 text-vision"
-                    : "border-brand/40 bg-brand/10 text-brand-light",
+                    ? "text-vision"
+                    : "text-brand",
             )}
           >
             {r.match_type}
           </span>,
         ])}
       />
-      <p className="mono-token text-sm font-bold">
+      <p className="mono-token text-sm font-semibold">
         Total: {a.total_awarded.toFixed(1)} / {a.total_max.toFixed(1)}
       </p>
     </div>
