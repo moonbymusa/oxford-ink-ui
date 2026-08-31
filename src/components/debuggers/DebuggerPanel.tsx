@@ -26,11 +26,11 @@ export const DEBUGGERS = [
 
 export type DebuggerTone = (typeof DEBUGGERS)[number]["tone"];
 
-export const toneClasses: Record<DebuggerTone, { text: string; border: string; bg: string }> = {
-  alert: { text: "text-alert", border: "border-alert/45", bg: "bg-alert/12" },
-  pass: { text: "text-pass", border: "border-pass/45", bg: "bg-pass/12" },
-  warn: { text: "text-warn", border: "border-warn/45", bg: "bg-warn/12" },
-  vision: { text: "text-vision", border: "border-vision/45", bg: "bg-vision/12" },
+export const toneClasses: Record<DebuggerTone, { text: string; border: string; bg: string; dot: string }> = {
+  alert: { text: "text-alert", border: "border-border", bg: "bg-transparent", dot: "bg-alert" },
+  pass: { text: "text-pass", border: "border-border", bg: "bg-transparent", dot: "bg-pass" },
+  warn: { text: "text-warn", border: "border-border", bg: "bg-transparent", dot: "bg-warn" },
+  vision: { text: "text-vision", border: "border-border", bg: "bg-transparent", dot: "bg-vision" },
 };
 
 function StatusLine({
@@ -44,8 +44,8 @@ function StatusLine({
 }) {
   const t = toneClasses[ok ? "pass" : tone];
   return (
-    <div className={cn("flex items-center gap-2 border-b border-border pb-3 text-sm font-semibold", t.text)}>
-      {ok ? <CheckCircle2 size={15} /> : <AlertTriangle size={15} />}
+    <div className={cn("flex items-center gap-2 text-sm font-medium", t.text)}>
+      {ok ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
       {children}
     </div>
   );
@@ -53,39 +53,40 @@ function StatusLine({
 
 function Row({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-1.5 text-sm">
+    <div className="flex items-center justify-between gap-4 py-1 text-sm">
       <span className="text-muted-foreground">{label}</span>
-      <span className={cn("font-semibold", mono && "mono-token")}>{value}</span>
+      <span className={cn("font-medium", mono && "mono-token")}>{value}</span>
     </div>
   );
 }
 
 function DataTable({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
-      <table className="w-full text-left text-xs">
-        <thead className="bg-muted/60">
-          <tr>
-            {head.map((h) => (
-              <th key={h} className="px-3 py-2 font-semibold text-muted-foreground">
-                {h}
-              </th>
+    <table className="w-full text-left text-xs">
+      <thead>
+        <tr className="border-b border-border">
+          {head.map((h) => (
+            <th
+              key={h}
+              className="py-1.5 pr-4 text-[0.625rem] font-medium tracking-wide text-muted-foreground uppercase"
+            >
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, i) => (
+          <tr key={i}>
+            {r.map((cell, j) => (
+              <td key={j} className="mono-token py-1.5 pr-4">
+                {cell}
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={i} className="border-t border-border">
-              {r.map((cell, j) => (
-                <td key={j} className="mono-token px-3 py-2">
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
